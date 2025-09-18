@@ -10,6 +10,7 @@ func _decode_data(data):
 	return data.get_string_from_utf8()
 
 func _init():
+	print("I AM RUNNING THE WEB SOCKER GODOT CLIENT!")
 	_client.connect('connection_closed', Callable(self, '_connection_closed'))
 	_client.connect('connection_established', Callable(self, '_connection_established'))
 	_client.connect('connection_error', Callable(self, '_connection_error'))

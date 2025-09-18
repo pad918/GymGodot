@@ -22,7 +22,7 @@ public partial class GymGodot : Node
     // Reference to the Environment node which must implement the methods {
     // get_observation(), get_reward(), reset(), is_done()
     [Export]
-    string environmentNode; // NODEPATH? TODO FIX TYPE
+    Environment environment; // NODEPATH? TODO FIX TYPE
 
     // Default url of the server (if not provided through cmdline arguments)
     string serverIP = "127.0.0.1";
@@ -39,13 +39,12 @@ public partial class GymGodot : Node
     bool debugPrint = false;
 
     List<int> currentAction = [];
-    Environment environment;
+
     int frameCounter;
 
 
     public override void _Ready()
     {
-        environment = GetNode<Environment>(environmentNode);
 
         if (!enabled)
         {
