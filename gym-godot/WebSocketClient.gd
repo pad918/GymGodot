@@ -4,16 +4,16 @@ var _client = WebSocketClient.new()
 var _write_mode = WebSocketPeer.WRITE_MODE_TEXT
 
 func _encode_data(data):
-	return data.to_utf8()
+	return data.to_utf8_buffer()
 
 func _decode_data(data):
 	return data.get_string_from_utf8()
 
 func _init():
-	_client.connect('connection_closed', self, '_connection_closed')
-	_client.connect('connection_established', self, '_connection_established')
-	_client.connect('connection_error', self, '_connection_error')
-	_client.connect('data_received', self, '_data_received')
+	_client.connect('connection_closed', Callable(self, '_connection_closed'))
+	_client.connect('connection_established', Callable(self, '_connection_established'))
+	_client.connect('connection_error', Callable(self, '_connection_error'))
+	_client.connect('data_received', Callable(self, '_data_received'))
 
 func _connection_established(_protocol):
 	if get_parent().debugPrint :
@@ -35,7 +35,9 @@ func _peer_connected(id):
 func _data_received():
 	var packet = _client.get_peer(1).get_packet()
 	var msg = _decode_data(packet)
-	var parsedMsg = JSON.parse(msg).result
+	var test_json_conv = JSON.new()
+	test_json_conv.parse(msg).result
+	var parsedMsg = test_json_conv.get_data()
 	if get_parent().debugPrint :
 		print('GYMGODOT : Received & Parsed data : %s \n' % [str(parsedMsg)])
 	# Read the received command and call the corresponding function

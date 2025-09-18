@@ -6,27 +6,28 @@
 ;   [section] ; section goes between []
 ;   param=value ; assign values to parameters
 
-config_version=4
-
-_global_script_classes=[  ]
-_global_script_class_icons={
-}
+config_version=5
 
 [application]
 
 config/name="gym-godot"
 run/main_scene="res://examples/mars_lander/Root.tscn"
+config/features=PackedStringArray("4.4", "C#")
 config/icon="res://icon.png"
 
 [display]
 
-window/size/height=1024
+window/size/viewport_height=1024
+
+[dotnet]
+
+project/assembly_name="gym-godot"
 
 [physics]
 
 3d/physics_engine="Bullet"
-3d/active_soft_world=false
 3d/default_gravity=3.7
+3d/active_soft_world=false
 
 [rendering]
 

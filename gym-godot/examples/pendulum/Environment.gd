@@ -1,4 +1,4 @@
-extends Spatial
+extends Node3D
 
 var currentAction : float = 0
 var theta : float = 0
@@ -41,7 +41,7 @@ func get_reward() -> float :
 	return -cost
 
 func reset() -> void :
-	var rand_rot = rand_range(-PI,PI)
+	var rand_rot = randf_range(-PI,PI)
 	$Pendulum.translate(Vector3(0,6,0))
 	$Pendulum.rotation = Vector3(rand_rot,0,0)
 	$Pendulum.translate(Vector3(0,-6,0))

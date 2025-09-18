@@ -1,4 +1,4 @@
-extends Spatial
+extends Node3D
 
 var isDone : bool = false
 var cartPosition : float = 0.0
@@ -11,9 +11,9 @@ func _ready() -> void:
 
 func apply_action(action : Array) -> void :
 	if action[0] == 0 :
-		$Cart.apply_impulse($Cart.global_transform.origin, Vector3(0,0,-2))
+		$Cart.apply_impulse(Vector3(0,0,-2), $Cart.global_transform.origin)
 	else :
-		$Cart.apply_impulse($Cart.global_transform.origin, Vector3(0,0,2))
+		$Cart.apply_impulse(Vector3(0,0,2), $Cart.global_transform.origin)
 
 func get_observation() -> Array :
 	var currentCartPosition = cartPosition

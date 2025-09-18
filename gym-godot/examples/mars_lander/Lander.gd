@@ -1,4 +1,4 @@
-extends RigidBody
+extends RigidBody3D
 
 var jetStrength : float = 0.08
 var lightEnergy : float = 0.15
@@ -11,23 +11,23 @@ func impulse(engine_id : String) -> void:
 	if engine_id == "AuxX":
 		$MeshFlameAuxX.visible = true
 		$LightAuxX.light_energy = lightEnergy
-		apply_impulse(transform.basis.xform($MeshFlameAuxX.transform.origin), -transform.basis.x*jetStrength)
+		apply_impulse(-transform.basis.x*jetStrength, transform.basis * ($MeshFlameAuxX.transform.origin))
 	elif engine_id == "AuxXn":
 		$MeshFlameAuxXn.visible = true
 		$LightAuxXn.light_energy = lightEnergy
-		apply_impulse(transform.basis.xform($MeshFlameAuxXn.transform.origin), transform.basis.x*jetStrength)
+		apply_impulse(transform.basis.x*jetStrength, transform.basis * ($MeshFlameAuxXn.transform.origin))
 	elif engine_id == "AuxZ":
 		$MeshFlameAuxZ.visible = true
 		$LightAuxZ.light_energy = lightEnergy
-		apply_impulse(transform.basis.xform($MeshFlameAuxZ.transform.origin), -transform.basis.z*jetStrength)
+		apply_impulse(-transform.basis.z*jetStrength, transform.basis * ($MeshFlameAuxZ.transform.origin))
 	elif engine_id == "AuxZn":
 		$MeshFlameAuxZn.visible = true
 		$LightAuxZn.light_energy = lightEnergy
-		apply_impulse(transform.basis.xform($MeshFlameAuxZn.transform.origin), transform.basis.z*jetStrength)
+		apply_impulse(transform.basis.z*jetStrength, transform.basis * ($MeshFlameAuxZn.transform.origin))
 	elif engine_id == "Main":
 		$MeshFlameMain.visible = true
 		$LightMain.light_energy = lightEnergy*2
-		apply_impulse(transform.basis.xform($MeshFlameMain.transform.origin), 4*transform.basis.y*jetStrength)
+		apply_impulse(4*transform.basis.y*jetStrength, transform.basis * ($MeshFlameMain.transform.origin))
 	elif engine_id == "None":
 		pass
 		

@@ -1,6 +1,6 @@
-extends RigidBody
+extends RigidBody3D
 
-func apply_torque(strength):
+func apply_torque_LOCAL(strength):
 	apply_torque_impulse(Vector3(strength,0,0))
 
 func get_angle() -> float:

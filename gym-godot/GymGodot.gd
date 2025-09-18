@@ -1,16 +1,16 @@
 extends Node
 
 # Enable / disable this node
-export(bool) var enabled = true
+@export var enabled: bool = true
 
 # Amount of frames simulated per step. 
 # During each of these frames, the current action will be applied. 
 # Once these frames are elapsed, the reward is computed and returned.
-export(int) var stepLength = 2
+@export var stepLength: int = 2
 
 # Reference to the Environment node which must implement the methods :
 # get_observation(), get_reward(), reset(), is_done()
-export(NodePath) var environmentNode
+@export var environmentNode: NodePath
 
 # Default url of the server (if not provided through cmdline arguments)
 var serverIP : String = '127.0.0.1'
@@ -23,11 +23,11 @@ var renderPath : String = './render_frames/'
 var renderFrameCounter : int = 0
 
 # Print debug logs
-export(bool) var debugPrint = false
+@export var debugPrint: bool = false
 
-onready var currentAction : Array = []
-onready var environment : Node = get_node(environmentNode)
-onready var frameCounter : int = 0
+@onready var currentAction : Array = []
+@onready var environment : Node = get_node(environmentNode)
+@onready var frameCounter : int = 0
 
 func _parse_arguments() -> Dictionary :
 	var arguments = {}
@@ -43,7 +43,7 @@ func _ready() -> void :
 		$WebSocketClient.free()
 		return
 	# This node will never be paused
-	pause_mode = 2 
+	process_mode = 2 
 	# Initialy, the environment is paused
 	get_tree().paused = true
 	# Get the server IP/Port from argument
@@ -89,23 +89,23 @@ func _returnData() -> void :
 	var reward : float = environment.get_reward()
 	var done : bool = environment.is_done()
 	var answer : Dictionary = {'observation': obs, 'reward': reward, 'done': done}
-	$WebSocketClient.send_to_server(JSON.print(answer))
+	$WebSocketClient.send_to_server(JSON.stringify(answer))
 	
 # Called by WebSocketClient when it recieve a reset msg
 func reset() -> void :
 	environment.reset()
 	var obs : Array = environment.get_observation()
 	var answer : Dictionary = {'init_observation': obs}
-	$WebSocketClient.send_to_server(JSON.print(answer))
+	$WebSocketClient.send_to_server(JSON.stringify(answer))
 	renderFrameCounter = 0
 
 # Called by WebSocketClient when it recieve a render msg. 
 # Renders to .png in the renderPath folder
 func render() -> void :
-	VisualServer.force_draw()
+	RenderingServer.force_draw()
 	var screenshot = get_viewport().get_texture().get_data()
 	screenshot.flip_y()
 	var error = screenshot.save_png(renderPath + str(renderFrameCounter) + '.png')
 	renderFrameCounter += 1
 	var answer : Dictionary = {'render_error': str(error)}
-	$WebSocketClient.send_to_server(JSON.print(answer))
+	$WebSocketClient.send_to_server(JSON.stringify(answer))

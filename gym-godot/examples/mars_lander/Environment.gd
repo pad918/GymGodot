@@ -1,12 +1,12 @@
-extends Spatial
+extends Node3D
 
 # Reward function weights
-export(float) var distanceCostWeight = 5
-export(float) var tiltCostWeight = 1
+@export var distanceCostWeight: float = 5
+@export var tiltCostWeight: float = 1
 # Negative reward for crashing
-export(float) var crashCost = 100
+@export var crashCost: float = 100
 # Positive reward for landing the four lander legs
-export(float) var landedStepReward = 5
+@export var landedStepReward: float = 5
 
 # Consider crashed when outside of these absolute limits
 var max_height : int = 14
@@ -83,14 +83,14 @@ func reset() -> void :
 	$Lander.hide_all_flames()
 	$Lander.set_identity()
 	# Random X / Z coordinates within crash limits. Y at fixed height.
-	var rand_pos_x = rand_range(-max_x+2, max_x-2)
-	var rand_pos_z = rand_range(-max_z+2, max_z-2)
+	var rand_pos_x = randf_range(-max_x+2, max_x-2)
+	var rand_pos_z = randf_range(-max_z+2, max_z-2)
 	$Lander.global_transform.origin = Vector3(rand_pos_x, max_height-3, rand_pos_z)
 	# Add random rotation around random direction
-	var rand_x = rand_range(0,1)
-	var rand_y = rand_range(0,1)
-	var rand_z = rand_range(0,1)
-	var angle = rand_range(-PI,PI)
+	var rand_x = randf_range(0,1)
+	var rand_y = randf_range(0,1)
+	var rand_z = randf_range(0,1)
+	var angle = randf_range(-PI,PI)
 	$Lander.global_transform.basis = $Lander.global_transform.basis.rotated(Vector3(rand_x,rand_y,rand_z).normalized(), angle)
 	# Reset speed to zero
 	$Lander.linear_velocity = Vector3(0,0,0)
