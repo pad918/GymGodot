@@ -26,10 +26,11 @@ public partial class WebSocketClient : Node
 
     public void Init()
     {
-        client.Connect("connection_closed", new Callable(this, "_connection_closed"));
-        client.Connect("connection_established", new Callable(this, "_connection_established"));
-        client.Connect("connection_error", new Callable(this, "_connection_error"));
-        client.Connect("data_received", new Callable(this, "_data_received"));
+        // client.Connect("connection_closed", new Callable(this, "_connection_closed"));
+        // client.Connect("connection_established", new Callable(this, "_connection_established"));
+        // client.Connect("connection_error", new Callable(this, "_connection_error"));
+        // client.Connect("data_received", new Callable(this, "_data_received"));
+
     }
 
 
@@ -56,10 +57,12 @@ public partial class WebSocketClient : Node
 
     public override void _Ready()
     {
-
+        GD.Print("WEB SOCKET CLINET CREATED!");
+        Init();
     }
 
     public void _data_received() {
+        GD.Print("GOT DATA!");
         var packet = client.GetPacket();
         var msg = DecodeData(packet);
         var parsedMsg = JsonNode.Parse(msg);
@@ -78,23 +81,42 @@ public partial class WebSocketClient : Node
         }
     }
 
-    public void _process(double delta) {
+    public override void _Process(double delta)
+    {
+        client.Poll();
+        // if (Parent.IsPaused)
+        //     return;
+        /*
         if (client.GetConnectedHost() == null)
         {
             GD.Print("GYMGODOT : Server connection lost, exit \n");
             GetTree().Quit();
             return;
-        }
+        }*/
         client.Poll();
+
+        int numWaiting = client.GetAvailablePacketCount();
+        GD.Print($"IN PROCESS!!!, num packets: {numWaiting}");
+        while (numWaiting > 0)
+        {
+            _data_received();
+            numWaiting--;
+        }
+
+        // Get ready state:
+
+        GD.Print($"Ready state: {client.GetReadyState()}");
     }
 
     public void _exit_tree() {
         client.Close();
     }
 
-    public void connect_to_server(string host, int port) {
+    public void connect_to_server(string host, int port)
+    {
         var url = $"ws://{host}:{port}";
-        client.ConnectToUrl(url);
+        GD.Print($"Connecting to {url}");
+        Error connErr = client.ConnectToUrl(url);
     }
     public void send_to_server(string data) {
         client.SendText(data);

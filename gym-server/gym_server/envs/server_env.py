@@ -1,5 +1,5 @@
-import gym
-from gym import spaces
+import gymnasium as gym
+from gymnasium import spaces
 import numpy as np
 import asyncio
 import websockets
@@ -45,9 +45,10 @@ class ServerEnv(gym.Env):
         render_path_flag = ' --renderPath={}'.format(renderPath)
         flags = physic_delta_flag + render_loop_flag + server_ip_flag + server_port_flag + render_path_flag
         print('- starting Godot env with command : ' + exeCmd + flags)
-        subprocess.Popen([exeCmd + flags], shell=True)
+        subprocess.Popen(exeCmd + flags, shell=True)
 
     def _start_server(self):
+        print("Starting the WS server")
         # Run server logic on process loop
         self.loop = asyncio.new_event_loop()
         asyncio.set_event_loop(self.loop)
@@ -82,7 +83,7 @@ class ServerEnv(gym.Env):
         # Block until answer available 
         return self.parent_conn.recv()
 
-    def reset(self):    
+    def reset(self, seed=None, options=None): #TODO implemenmt the seed    
         # Send reset msg and return initial observation
         answer = self._sendAndGetAnswer({'cmd': 'reset'})
         return np.array(answer['init_observation']).astype(np.float32)

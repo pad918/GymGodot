@@ -7,7 +7,9 @@ using System.Text.Json;
 
 public partial class GymGodot : Node
 {
-    WebSocketClient Client => GetNode<WebSocketClient>("");
+    WebSocketClient Client;
+
+    public bool IsPaused;
 
     // Enable / disable this node
     [Export]
@@ -51,10 +53,12 @@ public partial class GymGodot : Node
             Client.Free();
             return;
         }
+
+
         // This node will never be paused
         //process_mode = 2 
         // Initialy, the environment is paused
-        GetTree().Paused = true;
+        IsPaused = true;
 
         // Get the server IP/Port from argument
         var arguments = ParseArguments();
@@ -67,6 +71,10 @@ public partial class GymGodot : Node
         // Get frame render parameters
         if (arguments.ContainsKey("renderPath"))
             renderPath = arguments["renderPath"];
+
+
+        Client = new WebSocketClient();
+        AddChild(Client);
 
         // Connect to the ws server using those IP/port
         Client.connect_to_server(serverIP, serverPort);
@@ -102,13 +110,13 @@ public partial class GymGodot : Node
         // Then pause the game and return the observation/reward/isDone to the server
         if (frameCounter >= stepLength)
         {
-            GetTree().Paused = true;
+            IsPaused = true;
             frameCounter = 0;
             ReturnData();
         }
         else
         {
-            if (!GetTree().Paused)
+            if (!IsPaused)
             {
                 frameCounter += 1;
                 environment.ApplyAction(currentAction);
@@ -123,7 +131,7 @@ public partial class GymGodot : Node
         // Set the action for this new step and run this step
         currentAction = action;
 
-        GetTree().Paused = false;
+        IsPaused = false;
     }
 
     // Called by WebSocketClient node when it recieve a close msg
